@@ -1,0 +1,28 @@
+﻿@page "/Add-note"
+@rendermode InteractiveServer
+@using Models
+@inject INotesInterface noteservice
+@inject NavigationManager _NavigationManager
+<h3>Addnote</h3>
+
+<EditForm Model="newnote" OnValidSubmit="saveNote">
+	<DataAnnotationsValidator />
+	<MudInputLabel >Title</MudInputLabel>
+	<InputText @bind-value="newnote.Title" placeholder="Title"  >@newnote.Title</InputText>
+	<ValidationMessage For="()=>newnote.Title"></ValidationMessage>
+	<MudInputLabel>Description</MudInputLabel>
+	<InputText @bind-value="newnote.Notetext" placeholder="Description">@newnote.Notetext"</InputText>
+	<ValidationMessage For="()=>newnote.Notetext"></ValidationMessage>
+	<MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" >Save</MudButton>
+</EditForm>
+
+@code {
+	[SupplyParameterFromForm]
+	public Note newnote { set; get; } = new Note();
+	private async Task saveNote()
+	{
+		
+		await noteservice.CreateNote(newnote);
+		_NavigationManager.NavigateTo("/");	
+	}
+}

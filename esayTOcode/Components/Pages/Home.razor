@@ -1,0 +1,61 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@inject INotesInterface noteservice
+@inject NavigationManager _NavigationManager	
+<PageTitle>Home</PageTitle>
+<h1>here are my Notes</h1>
+
+<MudButton Color="Color.Primary" Variant="Variant.Filled" onclick="gotopageAddnote">Add Note</MudButton>
+
+@if (Noteslist == null)
+{
+
+    <h3>notes are null</h3>
+}
+else if (Noteslist.Count == 0)
+{
+    <h3>no notes found</h3>
+}
+else
+{    <ul>
+        @foreach (var item in Noteslist)
+
+        {
+            <li><h3>@item.Title</h3><br>
+                <p>@item.Notetext</p><p>@item.NoteDate</p>
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" onclick="@(() => _NavigationManager.NavigateTo($"/Edit-note/{item.Id}"))">Edit</MudButton>
+                mudbutton>                <MudButton Color="Color.Error" Variant="Variant.Filled" @onclick="()=> DeleteNote(item.Id)">Delete</MudButton>            </li>	        }
+
+    </ul>}
+@code{
+
+
+
+
+
+    private List<Note> Noteslist { get; set; } = new List<Note>();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        List<Note> Notes = await noteservice.GetNotesAsync();
+        Noteslist = Notes;
+
+    }
+
+
+    private void gotopageAddnote()
+    {
+        _NavigationManager.NavigateTo("/Add-note");
+    }
+   
+       
+        private async Task DeleteNote(int Id)
+{
+    await noteservice.DeleteNote(Id);
+    Noteslist = await noteservice.GetNotesAsync();
+}
+
+	}
+

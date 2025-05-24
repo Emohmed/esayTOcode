@@ -1,0 +1,51 @@
+﻿@page "/Edit-note/{id:int}"
+@rendermode InteractiveServer
+
+@using Models
+@inject INotesInterface noteservice
+@inject NavigationManager _NavigationManager
+<h3>Addnote</h3>
+
+<EditForm Model="editnote" OnValidSubmit="saveNote">
+	<DataAnnotationsValidator />
+	<MudInputLabel>Title</MudInputLabel>
+	<InputText @bind-value="editnote.Title" placeholder="Title">@editnote.Title</InputText>
+	<ValidationMessage For="()=>editnote.Title"></ValidationMessage>
+	<MudInputLabel>Description</MudInputLabel>
+	<InputText @bind-value="editnote.Notetext" placeholder="Description">@editnote.Notetext"</InputText>
+	<ValidationMessage For="()=>editnote.Notetext"></ValidationMessage>
+	<MudButton ButtonType="ButtonType.Submit" Color="Color.Success">Save</MudButton>
+</EditForm>
+
+@code {
+
+	[Parameter]	public int id { get; set; }
+	public Note editnote { set; get; } = new Note();
+	protected override async Task OnInitializedAsync()
+	{
+		var note = await noteservice.GetNoteByIdAsync(id);
+		editnote = note;
+	}
+	private async Task saveNote()
+	{
+
+		await noteservice.EditNoteAsync(editnote); 
+		_NavigationManager.NavigateTo("/");
+	}
+}
+ @* public Note editnote { get; set; } = new Note(); *@
+
+ @*    protected override async Task OnInitializedAsync() *@
+ @*    { *@
+ @*        var note = await noteservice.GetNoteByIdAsync(id); *@
+ @*        if (note != null) *@
+ @*            editnote = note; *@
+ @*        else *@
+ @*            _NavigationManager.NavigateTo("/"); *@
+ @*    } *@
+
+ @*    private async Task saveNote() *@
+ @*    { *@
+ @*        await noteservice.EditNoteAsync(editnote); *@
+ @*        _NavigationManager.NavigateTo("/"); *@
+ @*    } *@

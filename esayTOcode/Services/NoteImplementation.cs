@@ -43,6 +43,7 @@ namespace esayTOcode.Services
 
         public async Task EditNoteAsync(Note note)
         {
+            note.NoteDate = DateTime.Now;
             _ApplicationDbContext.Notes.Update(note);
             await _ApplicationDbContext.SaveChangesAsync();
         }
